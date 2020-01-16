@@ -1,22 +1,35 @@
 const express = require('express')
-const cookieParser = require('cookie-parser');
+var https = require('https')
+const fs = require('fs')
+// const cookieParser = require('cookie-parser')
 const app = express()
-const port = 3000
+// const port = 3000
+
+const key = fs.readFileSync(__dirname + '/selfsigned.key');
+const cert = fs.readFileSync(__dirname + '/selfsigned.crt');
+
+const options = {
+  key,
+  cert,
+};
 
 const root = 'public'
 
-app.use(cookieParser("secret"));
-// app.use(express.static('public'))
+// app.use(cookieParser("secret"));
 
-app.use((req, res) => {
+app.use((_, res, next) => {
   const options = {
-    maxAge: 2100,
+    // maxAge: 2100,
+    // expires: new Date('2040-07-07'), // session cookies don't have expires or maxAge
+
     httpOnly: true,
-    signed: true,
+    // signed: true,
     secure: true,
   };
 
   res.cookie('SESSION', '120f8hasf0asmf8h018hfm', options)
+
+  next()
 })
 
 app.get('/', (req, res) => {
@@ -39,4 +52,4 @@ app.get('/contents.html', (req, res) => {
   });
 });
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+https.createServer(options, app).listen(443)

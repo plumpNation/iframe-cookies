@@ -9,7 +9,8 @@
     "express": "^4.17.1"
   },
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "genkeys": "openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ./selfsigned.key -out selfsigned.crt"
   },
   "devDependencies": {
     "nodemon": "^2.0.2"
